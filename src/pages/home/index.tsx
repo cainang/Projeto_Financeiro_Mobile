@@ -1,107 +1,54 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { ProviderContext } from '../../context/ProviderContext';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList } from '../../../App';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import FinancePage from './screens/financePage';
+import InvestPage from './screens/investPage';
+import ConfigPage from './screens/configPage';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const users = firestore().collection('Users').get().then(res => {
-    //console.log(res);
-    res.forEach(r => {
-      console.log(r.data());
-      
-    })
-  });
+export type RootBottomTabParamList = {
+  InvestPage: undefined;
+  FinancePage: undefined;
+  ConfigPage: undefined;
+};
 
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+const Tab = createMaterialBottomTabNavigator<RootBottomTabParamList>();
 
-function HomePage(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+function HomePage({ route, navigation }: Props): React.JSX.Element {
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const {checkUser, currentUser} = useContext(ProviderContext);
+
+  useEffect(() => {
+    checkUser(() => navigation.navigate("Login"));
+  }, [currentUser])
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Tab.Navigator 
+      initialRouteName='FinancePage' 
+      activeColor='red' 
+      activeIndicatorStyle={{backgroundColor: "black", paddingVertical: 30, borderRadius: 100,}}
+      barStyle={{backgroundColor: "yellow",}}
+      labeled={false}
+    >
+      <Tab.Screen name="InvestPage" options={{tabBarIcon: "finance"}} component={InvestPage} />
+      <Tab.Screen name="FinancePage" options={{tabBarIcon: "wallet"}} component={FinancePage} />
+      <Tab.Screen name="ConfigPage" options={{tabBarIcon: "account"}} component={ConfigPage} />
+    </Tab.Navigator>
   );
 }
 

@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     Alert,
   SafeAreaView,
@@ -23,6 +23,8 @@ import firestore from '@react-native-firebase/firestore';
 import { RootStackParamList } from '../../../App';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ProviderContext, UserType } from '../../context/ProviderContext';
   
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -33,6 +35,18 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
+    const {currentUser} = useContext(ProviderContext);
+
+    useEffect(() => {
+        (async () => {
+            let user = await AsyncStorage.getItem('@Projeto-Financeiro/user');
+    
+            if (user) {
+                navigation.navigation.navigate("Home");
+            }
+        })()
+    }, [currentUser])
+
     async function handleSubmit() {
         if(isCad){
             try {
@@ -41,21 +55,27 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
                     .where('email', '==', email)
                     .get()
 
-                if (userSearch.empty) {
-                    let user = auth().createUserWithEmailAndPassword(email, senha);
-                    
-                    let newDocUser = await firestore()
-                        .collection('Users')
-                        .add({
-                            nome,
-                            email,
-                        })
-                } else {
-                    Alert.alert("Usuario já existente!")
+                if (!userSearch.empty) {
+                    Alert.alert("Usuario já existente!");
+                    return;
                 }
 
+                if (senha.length < 6) {
+                    Alert.alert("Senha deve ter pelo menos 6 caracteres!");
+                    return;
+                }
 
+               
+                let user = await auth().createUserWithEmailAndPassword(email, senha);
                 
+                let newDocUser = await firestore()
+                    .collection('Users')
+                    .add({
+                        nome,
+                        email,
+                    });
+                
+                await auth().signInWithEmailAndPassword(email, senha);
             } catch (error: any) {
                 if (error.code === 'auth/email-already-in-use') {
                     console.log('That email address is already in use!');
@@ -69,8 +89,8 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
             }
         } else {
             try {
-                let login = await auth().signInWithEmailAndPassword(email, senha);
-
+                await auth().signInWithEmailAndPassword(email, senha);
+                
                 navigation.navigation.push("Home");
                 
             } catch (error: any) {

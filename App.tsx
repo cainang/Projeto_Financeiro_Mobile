@@ -13,6 +13,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './src/pages/login';
 import HomePage from './src/pages/home';
+import { ContextProvider } from './src/context/ProviderContext';
+import { PaperProvider } from 'react-native-paper';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -24,12 +26,16 @@ function App(): React.JSX.Element {
   const Stack = createStackNavigator<RootStackParamList>();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={LoginPage} />
-        <Stack.Screen name="Home" component={HomePage} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <PaperProvider>
+      <ContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Login" component={LoginPage} />
+            <Stack.Screen name="Home" component={HomePage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ContextProvider>
+    </PaperProvider>
   );
 }
 
