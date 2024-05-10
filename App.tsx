@@ -9,16 +9,20 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigatorScreenParams } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './src/pages/login';
-import HomePage from './src/pages/home';
+import HomePage, { RootBottomTabParamList } from './src/pages/home';
 import { ContextProvider } from './src/context/ProviderContext';
 import { PaperProvider } from 'react-native-paper';
+import MetasPage from './src/pages/sidePages/metas';
+import AtualizarPage from './src/pages/sidePages/atualizarCad';
 
 export type RootStackParamList = {
   Login: undefined;
-  Home: undefined;
+  Home: NavigatorScreenParams<RootBottomTabParamList>;
+  Metas: undefined;
+  Atualizar: undefined;
 };
 
 function App(): React.JSX.Element {
@@ -32,6 +36,8 @@ function App(): React.JSX.Element {
           <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="Home" component={HomePage} />
+            <Stack.Screen name="Metas" component={MetasPage} />
+            <Stack.Screen name="Atualizar" component={AtualizarPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </ContextProvider>

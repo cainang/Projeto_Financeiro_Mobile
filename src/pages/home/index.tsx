@@ -40,9 +40,9 @@ function HomePage({ route, navigation }: Props): React.JSX.Element {
   return (
     <Tab.Navigator 
       initialRouteName='FinancePage' 
-      activeColor='red' 
-      activeIndicatorStyle={{backgroundColor: "black", paddingVertical: 30, borderRadius: 100,}}
-      barStyle={{backgroundColor: "yellow",}}
+      activeColor='#fff' 
+      activeIndicatorStyle={{backgroundColor: "transparent", paddingVertical: 30, borderRadius: 100,}}
+      barStyle={{backgroundColor: "#49AA26"}}
       labeled={false}
     >
       <Tab.Screen name="InvestPage" options={{tabBarIcon: "finance"}} component={InvestPage} />

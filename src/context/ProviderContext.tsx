@@ -68,7 +68,7 @@ export const ContextProvider = ({ children }: {children: ReactNode}) => {
 
   function Loading() {
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
             <ActivityIndicator animating={true} color={"#000"} />
         </View>
     )

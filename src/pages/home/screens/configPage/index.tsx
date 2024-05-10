@@ -14,33 +14,89 @@ import firestore from '@react-native-firebase/firestore';
 
 import { MaterialBottomTabScreenProps } from '@react-navigation/material-bottom-tabs';
 import { RootBottomTabParamList } from '../..';
+import { ProviderContext } from '../../../../context/ProviderContext';
+import { Avatar, List } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../../../App';
 
-type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'ConfigPage'>;
+//type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'ConfigPage'>;
+type Props = CompositeScreenProps<
+  MaterialBottomTabScreenProps<RootBottomTabParamList, 'ConfigPage'>,
+  StackScreenProps<RootStackParamList>
+>;
 
 function ConfigPage({route, navigation}: Props): React.JSX.Element {
 
+  const {signOut, currentUser} = useContext(ProviderContext);
 
   return (
-    <Text>Config page</Text>
+    <>
+      <View style={styles.header}>
+        <Avatar.Text size={50} label={currentUser ? currentUser.nome.split(" ").map(n => n[0]).join("").toUpperCase(): "EU"} />
+
+        <View style={styles.headerLeft}>
+          <View>
+            <Text style={styles.headerNome}>{currentUser ? currentUser.nome : "Eu"}</Text>
+            <Text style={styles.headerEmail}>{currentUser ? currentUser.email : "Eu"}</Text>
+          </View>
+
+          <TouchableOpacity onPress={signOut}>
+            <Icon style={{}} name="sign-out" size={25} color="#000" />
+          </TouchableOpacity>
+        </View>
+        
+      </View>
+      <ScrollView style={{flex: 1}}>
+        <View style={styles.body}>
+          <Text>Menu</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate("Metas")}>
+          <List.Item
+              title="Definir metas"
+              description=""
+              style={{paddingLeft: 5}}
+              left={props => <List.Icon {...props} icon="target" />}
+            />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Atualizar")}>
+          <List.Item
+            title="Atualizar cadastro"
+            description=""
+            style={{paddingLeft: 5}}
+            left={props => <List.Icon {...props} icon="account-edit" />}
+          />
+        </TouchableOpacity>
+      </ScrollView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  header: {
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    gap: 20,
+    alignItems: "center"
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  body: {
+    paddingHorizontal: 20,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1
   },
-  highlight: {
-    fontWeight: '700',
+  headerNome: {
+    fontSize: 20,
+    fontWeight: "500",
+    color: "#000",
+  },
+  headerEmail: {
+    
   },
 });
 

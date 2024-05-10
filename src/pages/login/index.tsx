@@ -42,7 +42,9 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
             let user = await AsyncStorage.getItem('@Projeto-Financeiro/user');
     
             if (user) {
-                navigation.navigation.navigate("Home");
+                navigation.navigation.navigate("Home", {
+                    screen: 'FinancePage',
+                  });
             }
         })()
     }, [currentUser])
@@ -91,7 +93,9 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
             try {
                 await auth().signInWithEmailAndPassword(email, senha);
                 
-                navigation.navigation.push("Home");
+                navigation.navigation.navigate("Home", {
+                    screen: 'FinancePage',
+                  });
                 
             } catch (error: any) {
                 Alert.alert(error);
