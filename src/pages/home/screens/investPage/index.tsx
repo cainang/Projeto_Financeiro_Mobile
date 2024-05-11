@@ -197,6 +197,16 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
   });
   const [modalState, setModalState] = useState(0);
 
+  const [dataChartMetas, setDataChartMetas] = useState<{
+    labels: string[], // optional
+    data: number[],
+    colors: string[]
+  }>({
+    labels: ["",], // optional
+    data: [0],
+    colors: ["#7FA653"]
+  });
+
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -215,11 +225,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
     setModalState(index);
   }, []);
 
-  const data = {
-    labels: ["Renda Fixa", "Renda Variável",], // optional
-    data: [0.4, 0.6],
-    colors: ["#7FA653", "#CFE0BC"]
-  };
+  
 
   const getDataLine = () => {
     firestore()
@@ -229,6 +235,8 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
         .get().then(data => {
           let mesesComReg: {mes: string, numMes: number}[] = [];
           let mesesData: {mes: string, total: number, numMes: number}[] = [];
+          let mesesAtual = new Date().getMonth();
+          let totalEntradaMes = 0;
 
           data.docs.forEach((d, index) => {
             let dateData = new Date(d.data().data.toDate());
@@ -286,26 +294,51 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
             let dataPorMes = data.docs.filter(dt => {
               return new Date(dt.data().data.toDate()).getMonth() == m.numMes;
             });
+            //console.log(dataPorMes[1].data());
+            
 
+            let totalMes = 0;
             dataPorMes.forEach((dpm, index) => {
               let entrada = dpm.data().tipo_reg == "entrada" ? parseFloat(dpm.data().valor) : 0;
               let saida = dpm.data().tipo_reg == "saida" ? parseFloat(dpm.data().valor) : 0;
 
-              let totalMes = entrada - saida;
-              if (mesesData.length > 0) {
-                mesesData.push({mes: m.mes, total: totalMes + mesesData[mesesData.length - 1].total, numMes: new Date(dpm.data().data.toDate()).getMonth()});
-              } else {
-                mesesData.push({mes: m.mes, total: totalMes, numMes: new Date(dpm.data().data.toDate()).getMonth()});
+              totalMes += entrada - saida;
+
+              /* if (mesesData.length > 0) {
+                let mSearch = mesesData.findIndex(mm => mm.mes == m.mes);
+                
+                if (mSearch != -1) {
+                  let tMes = mesesData[mSearch].total;
+                  mesesData[mSearch] = {mes: m.mes, total: (tMes + totalMes) + mesesData[mesesData.length - 1].total, numMes: new Date(dpm.data().data.toDate()).getMonth()};
+                }
+                mesesData.push({mes: m.mes, total: (totalMes) + mesesData[mesesData.length - 1].total, numMes: new Date(dpm.data().data.toDate()).getMonth()});
               }
-              mesesData.sort((a, b) => a.numMes - b.numMes);
+              if(mesesData.length == 0) {
+                mesesData.push({mes: m.mes, total: totalMes, numMes: new Date(dpm.data().data.toDate()).getMonth()});
+              } */
+              
             })
+            //console.log(totalMes);
+            
+            //console.log(m.mes, totalMes);
+            if(mesesData.length == 0) {
+              mesesData.push({mes: m.mes, total: totalMes, numMes: m.numMes});
+            } else {
+              mesesData.push({mes: m.mes, total: (totalMes + mesesData[mesesData.length - 1].total), numMes: m.numMes});
+            }
+            mesesData.sort((a, b) => a.numMes - b.numMes);
+            //console.log("mesesData", mesesData);
+
+            if (mesesAtual == m.numMes) {
+              totalEntradaMes = totalMes;
+            }
           })
  
           if (mesesComReg.length > 0) {
             mesesData.sort((a, b) => a.numMes - b.numMes);
             let labelMeses = mesesData.map(md => md.mes);
             let dataMeses = mesesData.map(md => md.total);
-            console.log(mesesData);
+            //console.log(mesesData);
             
             const data_line = {
               labels: labelMeses,
@@ -320,6 +353,13 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
             };
 
             setDataLineChart(data_line);
+            if (currentUser) {
+              setDataChartMetas({
+                labels: ["",], // optional
+                data: [((totalEntradaMes * 100) / currentUser.meta) / 100],
+                colors: ["#7FA653"]
+              })
+            }
           }
         });
   }
@@ -341,33 +381,6 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
   const [itemsPerPage, onItemsPerPageChange] = React.useState(
     numberOfItemsPerPageList[0]
   );
-
-  const [items_page] = React.useState([
-   {
-     key: 1,
-     name: 'Cupcake',
-     calories: 356,
-     fat: 16,
-   },
-   {
-     key: 2,
-     name: 'Eclair',
-     calories: 262,
-     fat: 16,
-   },
-   {
-     key: 3,
-     name: 'Frozen yogurt',
-     calories: 159,
-     fat: 6,
-   },
-   {
-     key: 4,
-     name: 'Gingerbread',
-     calories: 305,
-     fat: 3.7,
-   },
-  ]);
 
   const from = page * itemsPerPage;
   const to = Math.min((page + 1) * itemsPerPage, dataTable.length);
@@ -470,7 +483,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
         <Text style={styles.topValorContainer}>{formatter.format(valorTotal)}</Text>
       </View>
 
-      <ScrollView style={{flex: 1, backgroundColor: "#fff", borderTopLeftRadius: 40, borderTopRightRadius: 40,}}>
+      <ScrollView style={{flex: 1, borderTopLeftRadius: 40, borderTopRightRadius: 40, backgroundColor: "#fff",}}>
         <View style={styles.bottomContainer}>
           <View>
             <LineChart
@@ -494,8 +507,8 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
               withCustomBarColorFromData
             />
             <View style={{flexDirection: "column", gap: 10}}>
-              {data && data.labels.map((d, index) => {
-                let color = data.colors[index];
+              {dataChartRing && dataChartRing.labels.map((d, index) => {
+                let color = dataChartRing.colors[index];
 
                 return (
                   <View style={{flexDirection: "row", gap: 10}}>
@@ -507,7 +520,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
             </View>
           </View>
 
-          <View>
+          <View style={{marginBottom: 30, borderRadius: 20}}>
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title>Descrição</DataTable.Title>
@@ -538,7 +551,29 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
               />
             </DataTable>
           </View>
+
         </View>
+        {(currentUser && currentUser.meta) && (
+          <View style={styles.metasContainer}>
+            <ProgressChart
+              data={dataChartMetas}
+              width={screenWidth * 0.5}
+              height={220}
+              strokeWidth={16}
+              radius={60}
+              chartConfig={{...chartConfig,}}
+              hideLegend={true}
+              style={{marginTop: 10, }}
+              withCustomBarColorFromData
+            />
+            <View style={{flexDirection: "column", gap: 10,}}>
+              <View style={{flexDirection: "column", gap: 5}}>
+                <Text style={{fontSize: 20, color: "#fff"}}>Sua meta está </Text>
+                <Text style={{marginLeft: 15, fontSize: 20, color: "#fff"}}><Text style={{fontWeight: "bold"}}>{dataChartMetas.data[0] * 100}%</Text> concluida!</Text>
+              </View>
+            </View>
+        </View>
+        )}
       </ScrollView>
       
       <BottomSheetModal
@@ -587,8 +622,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   bottomContainer: {
-    
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    borderRadius: 40
   },
   fab: {
     position: 'absolute',
@@ -601,6 +636,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     flexDirection: "column"
+  },
+  metasContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#056608",
+    width: "100%",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
   },
 });
 

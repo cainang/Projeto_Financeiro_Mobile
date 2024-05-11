@@ -9,6 +9,7 @@ export interface UserType {
     id: string;
     nome: string;
     email: string | null;
+    meta: number;
 }
 
 interface ContextType {
@@ -28,6 +29,7 @@ export const ContextProvider = ({ children }: {children: ReactNode}) => {
         if (user) {
             let id = "";
             let nome = "";
+            let meta = 0;
             let userSearch = await firestore()
                     .collection('Users')
                     .where('email', '==', user.email)
@@ -36,12 +38,14 @@ export const ContextProvider = ({ children }: {children: ReactNode}) => {
             userSearch.forEach(d => {
                 id = d.id;
                 nome = d.data().nome;
+                meta = d.data().meta;
             })
 
             let userDTO: UserType = {
                 id,
                 nome,
-                email: user.email
+                email: user.email,
+                meta
             };
 
             setCurrentUser(userDTO);
