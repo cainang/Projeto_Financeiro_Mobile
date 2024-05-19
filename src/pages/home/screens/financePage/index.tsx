@@ -26,6 +26,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { ProviderContext } from '../../../../context/ProviderContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconF from 'react-native-vector-icons/FontAwesome5';
+import createAlert from '../../../../utils/createAlert';
 
 type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'FinancePage'>;
 
@@ -55,6 +56,16 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
 
   const handleCadCarteira = async () => {
     try {
+      if (tipo == "") {
+        Alert.alert("Selecione um tipo antes de salvar!");
+        return;
+      }
+
+      if (descricao == "" || !date || valor == "") {
+        Alert.alert("Formulario em branco, por favor preencha antes de salvar!");
+        return;
+      }
+
       let newDocUser = await firestore()
                     .collection('Reg')
                     .add({
@@ -110,6 +121,7 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
             contentStyle={{backgroundColor: "#eee"}}
             activeUnderlineColor="#056608"
             onChangeText={text => setValor(text)}
+            inputMode='numeric'
           />
 
           <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
@@ -140,6 +152,8 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
   const {currentUser} = useContext(ProviderContext);
   const [modalState, setModalState] = useState(0);
   const [valorTotal, setValorTotal] = useState(0);
+  const [entradaTotal, setEntradaTotal] = useState(0);
+  const [saidaTotal, setSaidaTotal] = useState(0);
   const [dataTable, setDataTable] = useState<any[]>([]);
 
   // ref
@@ -199,6 +213,8 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
           console.log(dataTable);
           
           setValorTotal(entrada - saida);
+          setEntradaTotal(entrada);
+          setSaidaTotal(saida);
         })
     }
   }, [modalState]);
@@ -212,7 +228,9 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
     <>
     <BottomSheetModalProvider>
     <View>
-      <Text>finance page - Valor Total: {formatter.format(valorTotal)}</Text>
+      <Text>Valor Total: {formatter.format(valorTotal)}</Text>
+      <Text>Entrada Total: {formatter.format(entradaTotal)}</Text>
+      <Text>Saida Total: {formatter.format(saidaTotal)}</Text>
       
       <BottomSheetModal
         ref={bottomSheetModalRef}

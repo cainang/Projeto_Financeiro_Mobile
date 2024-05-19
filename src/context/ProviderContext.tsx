@@ -49,10 +49,11 @@ export const ContextProvider = ({ children }: {children: ReactNode}) => {
             };
 
             setCurrentUser(userDTO);
-            setPending(false);
 
             await AsyncStorage.setItem('@Projeto-Financeiro/user', JSON.stringify(userDTO));
         }
+        
+        setPending(false);
     });
   }, []);
 

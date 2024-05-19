@@ -53,6 +53,19 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
 
   const handleCadInvest = async () => {
     try {
+      if (tipo == "") {
+        Alert.alert("Selecione um tipo antes de salvar!");
+        return;
+      } else if (tipoInvest == "") {
+        Alert.alert("Selecione um tipo de investimento antes de salvar!");
+        return;
+      }
+
+      if (descricao == "" || !date || valor == "") {
+        Alert.alert("Formulario em branco, por favor preencha antes de salvar!");
+        return;
+      }
+
       if (tipo == "saida") {
         if ((tipoInvest == "renda_fixa" && valorRendaFixa < parseFloat(valor)) || (tipoInvest == "renda_variavel" && valorRendaVariavel < parseFloat(valor))) {
           Alert.alert("Saida maior que total cadastrado!")
@@ -134,6 +147,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
             contentStyle={{backgroundColor: "#eee"}}
             activeUnderlineColor="#056608"
             onChangeText={text => setValor(text)}
+            inputMode='numeric'
           />
 
           <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
