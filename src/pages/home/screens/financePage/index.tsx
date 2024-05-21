@@ -27,6 +27,7 @@ import { ProviderContext } from '../../../../context/ProviderContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 import createAlert from '../../../../utils/createAlert';
+import Card from '../../../../components/Card';
 
 type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'FinancePage'>;
 
@@ -231,10 +232,21 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
     <>
     <BottomSheetModalProvider>
     <View>
-      <Text>Valor Total: {formatter.format(valorTotal)}</Text>
-      <Text>Entrada Total: {formatter.format(entradaTotal)}</Text>
-      <Text>Saida Total: {formatter.format(saidaTotal)}</Text>
-      
+      <Card
+        title='Entradas'
+        type='entrada'
+        value={formatter.format(entradaTotal)}
+      />
+      <Card
+        title='Saídas'
+        type='saida'
+        value={formatter.format(saidaTotal)}
+      />
+      <Card
+        title='Total'
+        type='total'
+        value={formatter.format(valorTotal)}
+      />
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
