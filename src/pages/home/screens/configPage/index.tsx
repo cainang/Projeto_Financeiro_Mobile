@@ -34,7 +34,7 @@ function ConfigPage({route, navigation}: Props): React.JSX.Element {
   return (
     <>
       <View style={styles.header}>
-        <Avatar.Text size={50} label={currentUser ? currentUser.nome.split(" ").map(n => n[0]).join("").toUpperCase(): "EU"} />
+        <Avatar.Text size={50} style={{borderRadius: 30}} label={currentUser ? currentUser.nome.split(" ").map(n => n[0]).join("").toUpperCase(): "EU"} />
 
         <View style={styles.headerLeft}>
           <View>
@@ -57,15 +57,17 @@ function ConfigPage({route, navigation}: Props): React.JSX.Element {
               title="Definir metas"
               description=""
               style={{paddingLeft: 5}}
-              left={props => <List.Icon {...props} icon="target" />}
+              titleStyle={{color: "#000"}}
+              left={props => <List.Icon {...props} color="#000" icon="target" />}
             />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Atualizar")}>
           <List.Item
             title="Atualizar cadastro"
             description=""
-            style={{paddingLeft: 5}}
-            left={props => <List.Icon {...props} icon="account-edit" />}
+            titleStyle={{color: "#000"}}
+            style={{paddingLeft: 5,}}
+            left={props => <List.Icon {...props} color="#000" icon="account-edit" />}
           />
         </TouchableOpacity>
       </ScrollView>

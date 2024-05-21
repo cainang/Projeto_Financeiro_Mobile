@@ -92,7 +92,7 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
         <Text style={{color: "#aaa", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo de Registro</Text>
         <SegmentedButtons
           style={{}}
-          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)"}}}
+          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)", onSecondaryContainer: "#000"}}}
           value={tipo}
           onValueChange={setTipo}
           buttons={[
@@ -114,6 +114,7 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
             contentStyle={{backgroundColor: "#eee"}}
             activeUnderlineColor="#056608"
             onChangeText={text => setDescricao(text)}
+            textColor='#000'
           />
 
           <TextInput
@@ -123,6 +124,7 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
             activeUnderlineColor="#056608"
             onChangeText={text => setValor(text)}
             inputMode='numeric'
+            textColor='#000'
           />
 
           <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
@@ -133,6 +135,7 @@ function ModalCad({id_user, closeModal}: {id_user: string, closeModal: () => voi
               activeUnderlineColor="#056608"
               readOnly
               style={{width: "80%"}}
+              textColor='#000'
             />
             <TouchableOpacity onPress={showDatepicker} style={{backgroundColor: "#49AA26", paddingHorizontal: 15, paddingVertical: 15, borderRadius: 20}}>
               <Icon style={{}} name="date-range" size={25} color="#fff" />
