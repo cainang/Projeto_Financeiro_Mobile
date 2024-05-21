@@ -99,7 +99,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
         <Text style={{color: "#aaa", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo de Registro</Text>
         <SegmentedButtons
           style={{}}
-          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)"}}}
+          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)", onSecondaryContainer: "#000"}}}
           value={tipo}
           onValueChange={setTipo}
           buttons={[
@@ -117,7 +117,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
         <Text style={{color: "#aaa", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo do Investimento</Text>
         <SegmentedButtons
           style={{}}
-          theme={{colors: {secondaryContainer: "rgba(61,215,53, 0.5)"}}}
+          theme={{colors: {secondaryContainer: "rgba(61,215,53, 0.5)", onSecondaryContainer: "#000"}}}
           value={tipoInvest}
           onValueChange={setTipoInvest}
           buttons={[
@@ -139,6 +139,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
             contentStyle={{backgroundColor: "#eee"}}
             activeUnderlineColor="#056608"
             onChangeText={text => setDescricao(text)}
+            textColor='#000'
           />
 
           <TextInput
@@ -148,6 +149,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
             activeUnderlineColor="#056608"
             onChangeText={text => setValor(text)}
             inputMode='numeric'
+            textColor='#000'
           />
 
           <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
@@ -158,6 +160,7 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
               activeUnderlineColor="#056608"
               readOnly
               style={{width: "80%"}}
+              textColor='#000'
             />
             <TouchableOpacity onPress={showDatepicker} style={{backgroundColor: "#49AA26", paddingHorizontal: 15, paddingVertical: 15, borderRadius: 20}}>
               <Icon style={{}} name="date-range" size={25} color="#fff" />
@@ -537,18 +540,18 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
           <View style={{marginBottom: 30, borderRadius: 20}}>
             <DataTable>
               <DataTable.Header>
-                <DataTable.Title>Descrição</DataTable.Title>
-                <DataTable.Title numeric>Tipo de Inves.</DataTable.Title>
-                <DataTable.Title numeric>Valor</DataTable.Title>
-                <DataTable.Title numeric>Tipo Movim.</DataTable.Title>
+                <DataTable.Title textStyle={{color: "#000"}}>Descrição</DataTable.Title>
+                <DataTable.Title textStyle={{color: "#000"}} numeric>Tipo de Inves.</DataTable.Title>
+                <DataTable.Title textStyle={{color: "#000"}} numeric>Valor</DataTable.Title>
+                <DataTable.Title textStyle={{color: "#000"}} numeric>Tipo Movim.</DataTable.Title>
               </DataTable.Header>
 
               {dataTable.slice(from, to).map((item) => (
                 <DataTable.Row key={item.key}>
-                  <DataTable.Cell>{item.descricao}</DataTable.Cell>
-                  <DataTable.Cell numeric>{item.tipo_invest == "renda_fixa" ? "Renda Fixa" : item.tipo_invest == "renda_variavel" ? "Renda Variável" : ""}</DataTable.Cell>
-                  <DataTable.Cell numeric>{formatter.format(item.valor)}</DataTable.Cell>
-                  <DataTable.Cell numeric>{item.tipo_reg == "entrada" ? <IconF style={{}} name="arrow-circle-up" size={25} color="#3dd705" /> : <IconF style={{}} name="arrow-circle-down" size={25} color="#e92929" />}</DataTable.Cell>
+                  <DataTable.Cell textStyle={{color: "#000"}}>{item.descricao}</DataTable.Cell>
+                  <DataTable.Cell textStyle={{color: "#000"}} numeric>{item.tipo_invest == "renda_fixa" ? "Renda Fixa" : item.tipo_invest == "renda_variavel" ? "Renda Variável" : ""}</DataTable.Cell>
+                  <DataTable.Cell textStyle={{color: "#000"}} numeric>{formatter.format(item.valor)}</DataTable.Cell>
+                  <DataTable.Cell textStyle={{color: "#000"}} numeric>{item.tipo_reg == "entrada" ? <IconF style={{}} name="arrow-circle-up" size={25} color="#3dd705" /> : <IconF style={{}} name="arrow-circle-down" size={25} color="#e92929" />}</DataTable.Cell>
                 </DataTable.Row>
               ))}
 

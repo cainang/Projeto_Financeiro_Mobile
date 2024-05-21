@@ -14,7 +14,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './src/pages/login';
 import HomePage, { RootBottomTabParamList } from './src/pages/home';
 import { ContextProvider } from './src/context/ProviderContext';
-import { PaperProvider } from 'react-native-paper';
+import { PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 import MetasPage from './src/pages/sidePages/metas';
 import AtualizarPage from './src/pages/sidePages/atualizarCad';
 
@@ -30,7 +30,7 @@ function App(): React.JSX.Element {
   const Stack = createStackNavigator<RootStackParamList>();
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={{...DefaultTheme, colors: {...DefaultTheme.colors, text: "#000", primary: "#056608"}}}>
       <ContextProvider>
         <NavigationContainer>
           <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
