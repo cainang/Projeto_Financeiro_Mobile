@@ -244,7 +244,7 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
         .get().then(res => {
           let entrada = 0;
           let saida = 0;
-          let saldo_anterior = currentUser.saldo_anterior ? currentUser.saldo_anterior : 0;
+          let saldo_anterior = !currentUser.saldo_transfirido ? currentUser.saldo_anterior : 0;
           
 
           let dataForTable: any[] = [];
@@ -278,6 +278,13 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
           setValorTotal((entrada - saida) + saldo_anterior);
           setEntradaTotal(entrada);
           setSaidaTotal(saida);
+
+          if(currentUser.saldo_transfirido) {
+            firestore()
+            .collection('Users')
+            .doc(currentUser.id)
+            .update({saldo_anterior: (entrada - saida)});
+          }
         }).catch(err => console.log(err))
     }
   }, [modalState, dateSelect]);
@@ -291,18 +298,47 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
       let mouthAtual = new Date().getMonth();
       let mouthLastReg = new Date(currentUser.data_ultima_alteracao.toDate()).getMonth();
 
+      if (mouthLastReg < mouthAtual && !currentUser.saldo_transfirido) {
+        firestore()
+        .collection('Reg')
+        .where('id_user', '==', currentUser.id)
+        .where('tipo', '==', 'carteira')
+        .where('data', '>=', firstDay)
+        .where('data', '<=', lastDay)
+        .get().then(res => {
+          let entrada = 0;
+          let saida = 0;
+
+          res.forEach(a => {
+            let data = a.data();
+
+            if (data.tipo_reg == "entrada") {
+              entrada += data.valor;
+            } else if (data.tipo_reg == "saida") {
+              saida += data.valor;
+            }
+          })
+
+        firestore()
+          .collection('Users')
+          .doc(currentUser.id).get().then(resU => {
+            let dataU = resU.data();
+
+            if (dataU) {
+              firestore()
+                .collection('Users')
+                .doc(currentUser.id)
+                .update({saldo_anterior: (entrada - saida) + dataU.saldo_anterior});
+            }
+          })
+
+        }).catch(err => console.log(err))
+      }
+
       if ((mouthLastReg < mouthAtual) && (!currentUser.saldo_transfirido && currentUser.saldo_anterior > 0)) {
         // mostrar alerta
         setVisibleDialog(true);
       }
-
-      firestore()
-          .collection('Reg')
-          .where('id_user', '==', currentUser.id)
-          .where('tipo', '==', 'carteira')
-          .where('data', '>=', firstDay)
-          .where('data', '<=', lastDay)
-          .get().then(res => {});
     }
   }, [dateSelect])
 
@@ -331,7 +367,7 @@ function FinancePage({route, navigation}: Props): React.JSX.Element {
         await firestore()
           .collection('Users')
           .doc(currentUser.id)
-          .update({saldo_anterior: 0});
+          .update({saldo_anterior: 0, saldo_transfirido: true});
 
         setVisibleDialog(false)
       }
