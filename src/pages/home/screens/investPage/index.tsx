@@ -23,6 +23,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 import { ProviderContext } from '../../../../context/ProviderContext';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { EntradaIcon, SaidaIcon } from '../../../../components/Icons';
+import { colors } from '../../../../utils/colors';
 
 type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'InvestPage'>;
 
@@ -93,13 +95,13 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
   };
 
   return (
-    <ScrollView style={{flex: 1, width: "100%",}}>
+    <ScrollView style={{flex: 1, width: "100%", backgroundColor: colors.darkGray}}>
       <View style={{flex: 1, paddingHorizontal: 20}}>
-        <Text style={{color: "#000", fontSize: 20, fontWeight: "500", marginBottom: 10}}>Adicionar Investimentos</Text>
-        <Text style={{color: "#aaa", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo de Registro</Text>
+        <Text style={{color: colors.white, fontSize: 20, fontWeight: "500", marginBottom: 10}}>Adicionar Investimentos</Text>
+        <Text style={{color: "#ccc", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo de Registro</Text>
         <SegmentedButtons
           style={{}}
-          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)", onSecondaryContainer: "#000"}}}
+          theme={{colors: {secondaryContainer: tipo == "entrada" ? "rgba(61,215,53, 0.5)" : "rgba(233,41,41, 0.5)", onSecondaryContainer: "#fff", onSurface: "#ccc"}}}
           value={tipo}
           onValueChange={setTipo}
           buttons={[
@@ -114,10 +116,10 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
           ]}
         />
 
-        <Text style={{color: "#aaa", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo do Investimento</Text>
+        <Text style={{color: "#ccc", fontSize: 15, fontWeight: "500", marginBottom: 10, marginTop: 10}}>Tipo do Investimento</Text>
         <SegmentedButtons
           style={{}}
-          theme={{colors: {secondaryContainer: "rgba(61,215,53, 0.5)", onSecondaryContainer: "#000"}}}
+          theme={{colors: {secondaryContainer: "rgba(61,215,53, 0.5)", onSecondaryContainer: "#fff", onSurface: "#ccc"}}}
           value={tipoInvest}
           onValueChange={setTipoInvest}
           buttons={[
@@ -136,39 +138,45 @@ function ModalCad({id_user, closeModal, valorRendaFixa, valorRendaVariavel}: {id
           <TextInput
             label="Descrição"
             value={descricao}
-            contentStyle={{backgroundColor: "#eee"}}
-            activeUnderlineColor="#056608"
+            theme={{colors: {onSurfaceVariant: colors.terciary}}}
+            contentStyle={{backgroundColor: colors.lightGray,}}
+            activeUnderlineColor={colors.terciary}
+            underlineColor={colors.primaryDisabled}
             onChangeText={text => setDescricao(text)}
-            textColor='#000'
+            textColor={colors.white}
           />
 
           <TextInput
             label="Valor"
             value={valor}
-            contentStyle={{backgroundColor: "#eee"}}
-            activeUnderlineColor="#056608"
+            theme={{colors: {onSurfaceVariant: colors.terciary}}}
+            contentStyle={{backgroundColor: colors.lightGray,}}
+            activeUnderlineColor={colors.terciary}
+            underlineColor={colors.primaryDisabled}
             onChangeText={text => setValor(text)}
             inputMode='numeric'
-            textColor='#000'
+            textColor={colors.white}
           />
 
           <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
             <TextInput
               label="Data"
               value={`${date.getDate().toLocaleString().padStart(2, "0")}/${(date.getMonth() + 1).toLocaleString().padStart(2, "0")}/${date.getFullYear()}`}
-              contentStyle={{backgroundColor: "#eee"}}
-              activeUnderlineColor="#056608"
+              theme={{colors: {onSurfaceVariant: colors.terciary}}}
+              contentStyle={{backgroundColor: colors.lightGray,}}
+              activeUnderlineColor={colors.terciary}
+              underlineColor={colors.primaryDisabled}
               readOnly
               style={{width: "80%"}}
-              textColor='#000'
+              textColor={colors.white}
             />
-            <TouchableOpacity onPress={showDatepicker} style={{backgroundColor: "#49AA26", paddingHorizontal: 15, paddingVertical: 15, borderRadius: 20}}>
+            <TouchableOpacity onPress={showDatepicker} style={{backgroundColor: colors.primary, paddingHorizontal: 15, paddingVertical: 15, borderRadius: 20}}>
               <Icon style={{}} name="date-range" size={25} color="#fff" />
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={handleCadInvest}>
-            <Text style={{backgroundColor: "#49AA26", textAlign: "center", borderRadius: 10, paddingVertical: 15, fontSize: 17, fontWeight: "500", color: "#fff"}}>Salvar</Text>
+          <TouchableOpacity onPress={handleCadInvest} disabled={(descricao == "" || valor == "" || tipo == "" || tipoInvest == "")}>
+            <Text style={{backgroundColor: (descricao == "" || valor == "" || tipo == "" || tipoInvest == "") ? colors.primaryDisabled : colors.primary, textAlign: "center", borderRadius: 10, paddingVertical: 15, fontSize: 17, fontWeight: "500", color: "#fff"}}>Salvar</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -190,7 +198,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
   }>({
     labels: ["Renda Fixa", "Renda Variável",], // optional
     data: [0.4, 0.6],
-    colors: ["#7FA653", "#CFE0BC"]
+    colors: ["#9681EB", "#c0b3f3"]
   });
   const [dataTable, setDataTable] = useState<any[]>([]);
   const [dataLineChart, setDataLineChart] = useState<{
@@ -206,7 +214,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
     datasets: [
       {
         data: [0],
-        color: (opacity = 1) => `rgba(99,120,61, ${opacity})`, // optional
+        color: (opacity = 1) => `rgba(150,129,235, ${opacity})`, // optional
         strokeWidth: 2 // optional
       }
     ],
@@ -221,7 +229,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
   }>({
     labels: ["",], // optional
     data: [0],
-    colors: ["#7FA653"]
+    colors: [colors.terciary]
   });
 
   // ref
@@ -362,7 +370,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
               datasets: [
                 {
                   data: dataMeses,
-                  color: (opacity = 1) => `rgba(99,120,61, ${opacity})`, // optional
+                  color: (opacity = 1) => `rgba(150,129,235, ${opacity})`, // optional
                   strokeWidth: 2 // optional
                 }
               ],
@@ -374,7 +382,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
               setDataChartMetas({
                 labels: ["",], // optional
                 data: [((totalEntradaMes * 100) / currentUser.meta) / 100],
-                colors: ["#7FA653"]
+                colors: [colors.terciary]
               })
             }
           }
@@ -386,7 +394,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: "#fff",
     backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(0,25,0, ${opacity})`,
+    color: (opacity = 1) => `rgba(255,255,255, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
     useShadowColorFromDataset: false // optional
@@ -480,7 +488,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
           setDataChartRing({
             labels: ["Renda Fixa", "Renda Variável",], // optional
             data: [rendaFixaPercent, rendaVariavelPercent],
-            colors: ["#7FA653", "#CFE0BC"]
+            colors: ["#9681EB", "#c0b3f3"]
           });
         })
     }
@@ -500,7 +508,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
         <Text style={styles.topValorContainer}>{formatter.format(valorTotal)}</Text>
       </View>
 
-      <ScrollView style={{flex: 1, borderTopLeftRadius: 40, borderTopRightRadius: 40, backgroundColor: "#fff",}}>
+      <ScrollView style={{flex: 1, borderTopLeftRadius: 40, borderTopRightRadius: 40, backgroundColor: colors.darkGray}}>
         <View style={styles.bottomContainer}>
           <View>
             <LineChart
@@ -508,7 +516,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
               width={screenWidth}
               height={220}
               chartConfig={chartConfig}
-              style={{marginTop: 15}}
+              style={{marginTop: 15,}}
             />
           </View>
           <View style={{flexDirection: "row", alignItems: "center", gap: 20}}>
@@ -530,14 +538,14 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
                 return (
                   <View style={{flexDirection: "row", gap: 10}}>
                     <View style={{width: 20, height: 20, borderRadius: 20, backgroundColor: color}}></View>
-                    <Text>{d}</Text>
+                    <Text style={{color: colors.white}}>{d}</Text>
                   </View>
                 )
               })}
             </View>
           </View>
 
-          <View style={{marginBottom: 30, borderRadius: 20}}>
+          <View style={{marginBottom: 30, borderRadius: 20, backgroundColor: colors.white, paddingVertical: 20,}}>
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title textStyle={{color: "#000"}}>Descrição</DataTable.Title>
@@ -551,7 +559,7 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
                   <DataTable.Cell textStyle={{color: "#000"}}>{item.descricao}</DataTable.Cell>
                   <DataTable.Cell textStyle={{color: "#000"}} numeric>{item.tipo_invest == "renda_fixa" ? "Renda Fixa" : item.tipo_invest == "renda_variavel" ? "Renda Variável" : ""}</DataTable.Cell>
                   <DataTable.Cell textStyle={{color: "#000"}} numeric>{formatter.format(item.valor)}</DataTable.Cell>
-                  <DataTable.Cell textStyle={{color: "#000"}} numeric>{item.tipo_reg == "entrada" ? <IconF style={{}} name="arrow-circle-up" size={25} color="#3dd705" /> : <IconF style={{}} name="arrow-circle-down" size={25} color="#e92929" />}</DataTable.Cell>
+                  <DataTable.Cell textStyle={{color: "#000"}} numeric>{item.tipo_reg == "entrada" ? <EntradaIcon /> : <SaidaIcon />}</DataTable.Cell>
                 </DataTable.Row>
               ))}
 
@@ -598,6 +606,8 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
         index={1}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
+        handleIndicatorStyle={{backgroundColor: colors.white}}
+        handleStyle={{backgroundColor: colors.darkGray, borderTopRightRadius: 15, borderTopLeftRadius: 15}}
       >
         <BottomSheetView style={styles.contentContainer}>
           <ModalCad id_user={currentUser ? currentUser.id : ""} closeModal={handleCloseModalPress} valorRendaFixa={valorRendaFixa} valorRendaVariavel={valorRendaVariavel} />
@@ -619,13 +629,13 @@ function InvestPage({route, navigation}: Props): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#056608",
+    backgroundColor: colors.primary,
   },
   topContainer: {
     //flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 60
   },
   topLabelContainer: {
     color: "rgba(255,255,255, 0.5)",
@@ -647,20 +657,21 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: "#49AA26"
+    backgroundColor: colors.terciary
   },
   contentContainer: {
     flex: 1,
     alignItems: 'center',
-    flexDirection: "column"
+    flexDirection: "column", 
+    
   },
   metasContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#056608",
+    backgroundColor: colors.primary,
     width: "100%",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
+    borderRadius: 40,
+    marginBottom: 30
   },
 });
 

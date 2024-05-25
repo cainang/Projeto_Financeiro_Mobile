@@ -18,6 +18,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import FinancePage from './screens/financePage';
 import InvestPage from './screens/investPage';
 import ConfigPage from './screens/configPage';
+import { colors } from '../../utils/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -40,9 +41,10 @@ function HomePage({ route, navigation }: Props): React.JSX.Element {
   return (
     <Tab.Navigator 
       initialRouteName='FinancePage' 
-      activeColor='#fff' 
+      activeColor={colors.secondary} 
+      inactiveColor={colors.terciary}
       activeIndicatorStyle={{backgroundColor: "transparent", paddingVertical: 30, borderRadius: 100,}}
-      barStyle={{backgroundColor: "#49AA26"}}
+      barStyle={{backgroundColor: colors.primary}}
       labeled={false}
     >
       <Tab.Screen name="InvestPage" options={{tabBarIcon: "finance"}} component={InvestPage} />

@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../../../App';
+import { colors } from '../../../../utils/colors';
 
 //type Props = MaterialBottomTabScreenProps<RootBottomTabParamList, 'ConfigPage'>;
 type Props = CompositeScreenProps<
@@ -38,36 +39,36 @@ function ConfigPage({route, navigation}: Props): React.JSX.Element {
 
         <View style={styles.headerLeft}>
           <View>
-            <Text style={styles.headerNome}>{currentUser ? currentUser.nome : "Eu"}</Text>
-            <Text style={styles.headerEmail}>{currentUser ? currentUser.email : "Eu"}</Text>
+            <Text style={[styles.headerNome, styles.text]}>{currentUser ? currentUser.nome : "Eu"}</Text>
+            <Text style={[styles.headerEmail, styles.text]}>{currentUser ? currentUser.email : "Eu"}</Text>
           </View>
 
           <TouchableOpacity onPress={signOut}>
-            <Icon style={{}} name="sign-out" size={25} color="#000" />
+            <Icon style={{}} name="sign-out" size={25} color={colors.white} />
           </TouchableOpacity>
         </View>
         
       </View>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1, backgroundColor: colors.darkGray}}>
         <View style={styles.body}>
-          <Text>Menu</Text>
+          <Text style={[styles.text]}>Menu</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate("Metas")}>
           <List.Item
               title="Definir metas"
               description=""
-              style={{paddingLeft: 5}}
-              titleStyle={{color: "#000"}}
-              left={props => <List.Icon {...props} color="#000" icon="target" />}
+              style={{paddingLeft: 5, paddingVertical: 30}}
+              titleStyle={{color: colors.white}}
+              left={props => <List.Icon {...props} color={colors.white} icon="target" />}
             />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Atualizar")}>
           <List.Item
             title="Atualizar cadastro"
             description=""
-            titleStyle={{color: "#000"}}
-            style={{paddingLeft: 5,}}
-            left={props => <List.Icon {...props} color="#000" icon="account-edit" />}
+            titleStyle={{color: colors.white}}
+            style={{paddingLeft: 5, paddingBottom: 30}}
+            left={props => <List.Icon {...props} color={colors.white} icon="account-edit" />}
           />
         </TouchableOpacity>
       </ScrollView>
@@ -81,7 +82,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: "row",
     gap: 20,
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: colors.darkGray
   },
   body: {
     paddingHorizontal: 20,
@@ -100,6 +102,9 @@ const styles = StyleSheet.create({
   headerEmail: {
     
   },
+  text: {
+    color: colors.white
+  }
 });
 
 export default ConfigPage;

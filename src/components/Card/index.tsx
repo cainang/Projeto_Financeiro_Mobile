@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Income from '../../assets/income.svg';
 import Expense from '../../assets/expense.svg';
 import Total from '../../assets/total.svg';
+import { colors } from '../../utils/colors';
 
 type CardProps = {
   title: string;
@@ -23,9 +24,9 @@ function Card(props: CardProps): React.JSX.Element {
 
   const getBackgroundColor = () => {
     if (props.type === 'total') {
-      return '#4CAF50';
+      return colors.primary;
     } else {
-      return '#fff';
+      return colors.secondary;
     }
   }
 

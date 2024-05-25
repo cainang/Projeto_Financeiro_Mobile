@@ -8,6 +8,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
     Alert,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,6 +27,7 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProviderContext, UserType } from '../../context/ProviderContext';
 import Svg, { Path } from "react-native-svg"
+import { colors } from '../../utils/colors';
   
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -101,10 +103,12 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
             } catch (error: any) {
                 if (error.code === 'auth/email-already-in-use') {
                     console.log('That email address is already in use!');
+                    Alert.alert("Esse email já está em uso!");
                 }
             
                 if (error.code === 'auth/invalid-email') {
                     console.log('That email address is invalid!');
+                    Alert.alert("Esse email é inválido!");
                 }
             
                 console.error(error);
@@ -125,9 +129,16 @@ function LoginComponent({navigation}: {navigation: Props}): React.JSX.Element {
 
     return (
         <SafeAreaView style={styles.containerLoginComponent}>
+            <View style={{justifyContent: "center", alignItems:  "center", paddingVertical: 20, backgroundColor: colors.primary, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, marginBottom: 20}}>
+                <LogoSVG />
+            </View>
             <View style={styles.cardLoginComponent}>
+                <View>
+                    <Image source={require("../../assets/bar-chart.png")} width={50} resizeMode='contain' style={{width: "100%", height: 200}} />
+                </View>
                 <View style={styles.headerContainerLoginComponent}>
-                    <LogoSVG />
+                    {/* <LogoSVG /> */}
+                    <Text style={styles.headerTextLoginComponent}>{isCad ? "Cadastro" : "Login"}</Text>
                     <Text style={styles.headerDescLoginComponent}>Faça login para controlar suas finanças!</Text>
                 </View>
 
@@ -181,14 +192,11 @@ function LoginPage({ route, navigation }: Props): React.JSX.Element {
 const styles = StyleSheet.create({
     containerLoginComponent: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "#b1efae"
+        backgroundColor: colors.darkGray
     },
     cardLoginComponent: {
-        backgroundColor: "#056608",
+        //backgroundColor: "#056608",
         paddingHorizontal: 30,
-        paddingVertical: 20,
         borderRadius: 20,
     },
     headerContainerLoginComponent: {
@@ -197,8 +205,9 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     headerTextLoginComponent: {
-        fontSize: 20,
-        fontWeight: "bold"
+        fontSize: 30,
+        fontWeight: "bold",
+        color: "#fff",
     },
     headerDescLoginComponent: {
         fontWeight: "300",
@@ -226,11 +235,11 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     buttonTextLoginComponent: {
-        color: "#056608"
+        color: colors.primary
     },
     eyeIconLoginComponent: {
         position: "absolute",
-        left: "85%",
+        left: "88%",
         bottom: 8,
         color: "#fff",
     }

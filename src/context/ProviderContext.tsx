@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator } from "react-native-paper";
 import { View } from "react-native";
@@ -10,6 +10,9 @@ export interface UserType {
     nome: string;
     email: string | null;
     meta: number;
+    saldo_anterior: number;
+    data_ultima_alteracao: FirebaseFirestoreTypes.Timestamp;
+    saldo_transfirido: boolean;
 }
 
 interface ContextType {
@@ -26,35 +29,82 @@ export const ContextProvider = ({ children }: {children: ReactNode}) => {
 
   useEffect(() => {
     auth().onAuthStateChanged(async (user) => {
-        if (user) {
-            let id = "";
-            let nome = "";
-            let meta = 0;
-            let userSearch = await firestore()
-                    .collection('Users')
-                    .where('email', '==', user.email)
-                    .get();
+      if (user) {
+        let id = "";
+        let nome = "";
+        let meta = 0;
+        let saldo_anterior = 0;
+        let saldo_transfirido = false;
+        let data_ultima_alteracao: FirebaseFirestoreTypes.Timestamp = {} as FirebaseFirestoreTypes.Timestamp;
+        let userSearch = await firestore()
+                .collection('Users')
+                .where('email', '==', user.email)
+                .get();
 
-            userSearch.forEach(d => {
-                id = d.id;
-                nome = d.data().nome;
-                meta = d.data().meta;
-            })
+        userSearch.forEach(d => {
+            id = d.id;
+            nome = d.data().nome;
+            meta = d.data().meta;
+            saldo_anterior = d.data().saldo_anterior;
+            data_ultima_alteracao = d.data().data_ultima_alteracao;
+            saldo_transfirido = d.data().saldo_transfirido;
+        })
 
-            let userDTO: UserType = {
-                id,
-                nome,
-                email: user.email,
-                meta
-            };
+        let userDTO: UserType = {
+            id,
+            nome,
+            email: user.email,
+            meta,
+            saldo_anterior,
+            data_ultima_alteracao,
+            saldo_transfirido
+        };
 
-            setCurrentUser(userDTO);
+        setCurrentUser(userDTO);
 
-            await AsyncStorage.setItem('@Projeto-Financeiro/user', JSON.stringify(userDTO));
-        }
+        await AsyncStorage.setItem('@Projeto-Financeiro/user', JSON.stringify(userDTO));
+    }
         
         setPending(false);
     });
+
+    auth().onUserChanged(async (user) => {
+      if (user) {
+          let id = "";
+          let nome = "";
+          let meta = 0;
+          let saldo_anterior = 0;
+          let saldo_transfirido = false;
+          let data_ultima_alteracao: FirebaseFirestoreTypes.Timestamp = {} as FirebaseFirestoreTypes.Timestamp;
+          let userSearch = await firestore()
+                  .collection('Users')
+                  .where('email', '==', user.email)
+                  .get();
+
+          userSearch.forEach(d => {
+              id = d.id;
+              nome = d.data().nome;
+              meta = d.data().meta;
+              saldo_anterior = d.data().saldo_anterior;
+              data_ultima_alteracao = d.data().data_ultima_alteracao;
+              saldo_transfirido = d.data().saldo_transfirido;
+          })
+
+          let userDTO: UserType = {
+              id,
+              nome,
+              email: user.email,
+              meta,
+              saldo_anterior,
+              data_ultima_alteracao,
+              saldo_transfirido
+          };
+
+          setCurrentUser(userDTO);
+
+          await AsyncStorage.setItem('@Projeto-Financeiro/user', JSON.stringify(userDTO));
+      }
+  });
   }, []);
 
   async function signOut() {

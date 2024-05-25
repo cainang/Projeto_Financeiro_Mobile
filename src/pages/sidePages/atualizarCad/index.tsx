@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFh from 'react-native-vector-icons/Feather';
 import { RootStackParamList } from '../../../../App';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { colors } from '../../../utils/colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Atualizar'>;
 
@@ -78,7 +79,7 @@ function AtualizarPage({route, navigation}: Props): React.JSX.Element {
           <TouchableOpacity onPress={() => navigation.navigate("Home", {
             screen: "ConfigPage"
           })}>
-            <IconFh style={{}} name="arrow-left" size={25} color="#000" />
+            <IconFh style={{}} name="arrow-left" size={25} color={colors.white} />
           </TouchableOpacity>
 
           <View>
@@ -88,26 +89,33 @@ function AtualizarPage({route, navigation}: Props): React.JSX.Element {
         </View>
         
       </View>
-      <ScrollView style={{flex: 1}}>
+      <ScrollView style={{flex: 1, backgroundColor: colors.darkGray}}>
         <View style={styles.body}>
           <TextInput
             label="Nome"
             value={nome}
-            contentStyle={{backgroundColor: "#eee",}}
-            activeUnderlineColor="#056608"
+            theme={{colors: {onSurfaceVariant: colors.terciary}}}
+            contentStyle={{backgroundColor: colors.lightGray,}}
+            activeUnderlineColor={colors.terciary}
+            underlineColor={colors.primaryDisabled}
             onChangeText={text => setNome(text)}
+            textColor={colors.white}
           />
 
         <TextInput
             label="Email"
             value={email}
-            contentStyle={{backgroundColor: "#eee",}}
-            activeUnderlineColor="#056608"
+            theme={{colors: {onSurfaceVariant: colors.terciary}}}
+            contentStyle={{backgroundColor: colors.lightGray,}}
+            activeUnderlineColor={colors.terciary}
+            underlineColor={colors.primaryDisabled}
             onChangeText={text => setEmail(text)}
+            inputMode='email'
+            textColor={colors.white}
           />
 
-          <TouchableOpacity onPress={handleCadMeta}>
-            <Text style={{backgroundColor: "#49AA26", textAlign: "center", borderRadius: 10, paddingVertical: 15, fontSize: 17, fontWeight: "500", color: "#fff"}}>Salvar</Text>
+          <TouchableOpacity onPress={handleCadMeta} disabled={(nome == "" || email == "")}>
+            <Text style={{backgroundColor: (nome == "" || email == "") ? colors.primaryDisabled : colors.primary, textAlign: "center", borderRadius: 10, paddingVertical: 15, fontSize: 17, fontWeight: "500", color: "#fff"}}>Salvar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -121,7 +129,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: "row",
     gap: 20,
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: colors.darkGray
   },
   body: {
     paddingHorizontal: 20,
@@ -137,10 +146,10 @@ const styles = StyleSheet.create({
   headerNome: {
     fontSize: 25,
     fontWeight: "500",
-    color: "#000",
+    color: colors.white,
   },
   headerEmail: {
-    
+    color: "#ccc",
   },
 });
 

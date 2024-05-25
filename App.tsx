@@ -17,12 +17,20 @@ import { ContextProvider } from './src/context/ProviderContext';
 import { PaperProvider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 import MetasPage from './src/pages/sidePages/metas';
 import AtualizarPage from './src/pages/sidePages/atualizarCad';
+import ListRegPage from './src/pages/sidePages/listRegPage';
+import { colors } from './src/utils/colors';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: NavigatorScreenParams<RootBottomTabParamList>;
   Metas: undefined;
   Atualizar: undefined;
+  ListReg: {
+    type: string,
+    mouth: number,
+    mouth_desc: string,
+    value_adic?: number
+  };
 };
 
 function App(): React.JSX.Element {
@@ -30,7 +38,7 @@ function App(): React.JSX.Element {
   const Stack = createStackNavigator<RootStackParamList>();
 
   return (
-    <PaperProvider theme={{...DefaultTheme, colors: {...DefaultTheme.colors, text: "#000", primary: "#056608"}}}>
+    <PaperProvider theme={{...DefaultTheme, colors: {...DefaultTheme.colors, text: "#000", primary: colors.primary}}}>
       <ContextProvider>
         <NavigationContainer>
           <Stack.Navigator initialRouteName='Login' screenOptions={{headerShown: false}}>
@@ -38,6 +46,7 @@ function App(): React.JSX.Element {
             <Stack.Screen name="Home" component={HomePage} />
             <Stack.Screen name="Metas" component={MetasPage} />
             <Stack.Screen name="Atualizar" component={AtualizarPage} />
+            <Stack.Screen name="ListReg" component={ListRegPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </ContextProvider>
